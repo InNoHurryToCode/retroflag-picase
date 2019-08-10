@@ -8,23 +8,31 @@ resetPin = 2
 ledPin = 14 
 powerenPin = 4 
 hold = 1
+
 led = LED(ledPin)
 led.on()
+
 power = LED(powerenPin)
 power.on()
 
 #functions that handle button events
-def when_pressed():
+def pressed_power():
   led.blink(.2,.2)
-  os.system("sudo killall emulationstation && sleep 5s && sudo shutdown -h now")
-def when_released():
+  os.system("sleep 5s && sudo shutdown -h now")
+
+def pressed_reset(): 
+  led.blink(.2,.2)
+  os.system("sleep 5s && sudo shutdown -r now")
+
+def released_button():
   led.on()
-def reboot(): 
-  os.system("sudo killall emulationstation && sleep 5s && sudo reboot")
   
-btn = Button(powerPin, hold_time=hold)
-rebootBtn = Button(resetPin)
-rebootBtn.when_pressed = reboot 
-btn.when_pressed = when_pressed
-btn.when_released = when_released
+powerBtn = Button(powerPin, hold_time=hold)
+powerBtn.when_pressed = pressed_power
+powerBtn.when_released = released_button
+
+resetBtn = Button(resetPin, hold_time=hold)
+resetBtn.when_pressed = pressed_reset 
+resetBtn.when_released = released_button
+
 pause()
